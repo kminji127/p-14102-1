@@ -2,8 +2,11 @@ package com.back.domain.post.controller;
 
 import com.back.domain.post.entity.Post;
 import com.back.domain.post.service.PostService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class PostController {
     private final PostService postService;
 
@@ -50,25 +54,9 @@ public class PostController {
 
     @PostMapping("/posts/doWrite")
     @ResponseBody
-    public String createPost(@RequestParam(defaultValue = "") String title, @RequestParam(defaultValue = "") String content) {
-        if (title.isBlank()) {
-            return getErrorMessageHtml("제목을 입력해주세요") + getWriteFormHtml(title, content, "title");
-        }
-        if (title.length() < 2) {
-            return getErrorMessageHtml("제목을 2자 이상 적어주세요") + getWriteFormHtml(title, content, "title");
-        }
-        if (title.length() > 20) {
-            return getErrorMessageHtml("제목은 20자까지 입력 가능합니다") + getWriteFormHtml(title, content, "title");
-        }
-        if (content.isBlank()) {
-            return getErrorMessageHtml("내용을 입력해주세요") + getWriteFormHtml(title, content, "content");
-        }
-        if (content.length() < 2) {
-            return getErrorMessageHtml("내용을 2자 이상 적어주세요") + getWriteFormHtml(title, content, "content");
-        }
-        if (content.length() > 100) {
-            return getErrorMessageHtml("내용은 100자까지 입력 가능합니다") + getWriteFormHtml(title, content, "content");
-        }
+    public String createPost(
+            @NotBlank @Size(min = 2, max = 20) @RequestParam(defaultValue = "") String title,
+            @NotBlank @Size(min = 2, max = 100) @RequestParam(defaultValue = "") String content) {
         Post newPost = postService.write(title, content);
         return "%d번 글 생성 완료".formatted(newPost.getId());
     }
