@@ -2,14 +2,16 @@ package com.back.domain.post.controller;
 
 import com.back.domain.post.entity.Post;
 import com.back.domain.post.service.PostService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -52,12 +54,26 @@ public class PostController {
         return getWriteFormHtml("", "", "title");
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class WriteForm {
+        @NotBlank
+        @Size(min = 2, max = 20)
+        private String title;
+
+        @NotBlank
+        @Size(min = 2, max = 100)
+        private String content;
+    }
+
     @PostMapping("/posts/doWrite")
     @ResponseBody
     public String createPost(
-            @NotBlank @Size(min = 2, max = 20) @RequestParam(defaultValue = "") String title,
-            @NotBlank @Size(min = 2, max = 100) @RequestParam(defaultValue = "") String content) {
-        Post newPost = postService.write(title, content);
+            // @Valid @ModelAttribute("writeForm") WriteForm form의 축약형
+            // @ModelAttribute: 스프링 MVC에서 요청 파라미터를 자바 객체로 바인딩
+            // @Valid: form 객체의 필드에 @NotBlank, @Size 등 붙어 있으면 검사
+            @Valid WriteForm form) {
+        Post newPost = postService.write(form.getTitle(), form.getContent());
         return "%d번 글 생성 완료".formatted(newPost.getId());
     }
 }
