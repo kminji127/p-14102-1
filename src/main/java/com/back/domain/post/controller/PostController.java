@@ -5,6 +5,7 @@ import com.back.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -16,7 +17,7 @@ public class PostController {
     @ResponseBody
     public String write() {
         return """
-                <form action="doWrite" target="_blank">
+                <form action="doWrite" method="POST">
                   <input type="text" name="title" placeholder="제목">
                   <br>
                   <textarea name="content" placeholder="내용"></textarea>
@@ -26,7 +27,7 @@ public class PostController {
                 """;
     }
 
-    @GetMapping("/posts/doWrite")
+    @PostMapping("/posts/doWrite")
     @ResponseBody
     public String createPost(String title, String content) {
         Post newPost = postService.write(title, content);
