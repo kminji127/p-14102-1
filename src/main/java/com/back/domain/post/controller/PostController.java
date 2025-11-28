@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PostController {
     private final PostService postService;
 
-    private String getWriteFormHtml(String title, String content) {
+    private String getWriteFormHtml(String title, String content, String fieldToFocus) {
         return """
                 <form action="doWrite" method="POST">
                   <input type="text" name="title" placeholder="제목" value="%s">
@@ -23,7 +23,17 @@ public class PostController {
                   <br>
                   <input type="submit" value="작성">
                 </form>
-                """.formatted(title, content);
+                <script>
+                  const fieldToFocus = '%s';
+                  if (fieldToFocus.length > 0) {
+                    // 현재까지 나온 모든 폼 중 마지막 1개 찾기
+                    const forms = document.querySelectorAll('form');
+                    const lastForm = forms[forms.length - 1];
+                    // 해당 폼에서 지정된 필드에 포커스
+                    lastForm[fieldToFocus].focus();
+                  }
+                </script>
+                """.formatted(title, content, fieldToFocus);
     }
 
     private String getErrorMessageHtml(String errorMessage) {
@@ -35,17 +45,17 @@ public class PostController {
     @GetMapping("/posts/write")
     @ResponseBody
     public String write() {
-        return getWriteFormHtml("", "");
+        return getWriteFormHtml("", "", "title");
     }
 
     @PostMapping("/posts/doWrite")
     @ResponseBody
     public String createPost(@RequestParam(defaultValue = "") String title, @RequestParam(defaultValue = "") String content) {
         if (title.isBlank()) {
-            return getErrorMessageHtml("제목을 입력해주세요") + getWriteFormHtml(title, content);
+            return getErrorMessageHtml("제목을 입력해주세요") + getWriteFormHtml(title, content, "title");
         }
         if (content.isBlank()) {
-            return getErrorMessageHtml("내용을 입력해주세요") + getWriteFormHtml(title, content);
+            return getErrorMessageHtml("내용을 입력해주세요") + getWriteFormHtml(title, content, "content");
 
         }
         Post newPost = postService.write(title, content);
