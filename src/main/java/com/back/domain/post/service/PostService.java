@@ -2,6 +2,7 @@ package com.back.domain.post.service;
 
 import com.back.domain.post.entity.Post;
 import com.back.domain.post.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ public class PostService {
         return postRepository.count();
     }
 
+    @Transactional
     public Post write(String title, String content) {
         return postRepository.save(new Post(title, content));
     }
