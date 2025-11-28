@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PostController {
     private final PostService postService;
 
-    private String getWriteFormHtml() {
+    private String getWriteFormHtml(String title, String content) {
         return """
                 <form action="doWrite" method="POST">
-                  <input type="text" name="title" placeholder="제목">
+                  <input type="text" name="title" placeholder="제목" value="%s">
                   <br>
-                  <textarea name="content" placeholder="내용"></textarea>
+                  <textarea name="content" placeholder="내용">%s</textarea>
                   <br>
                   <input type="submit" value="작성">
                 </form>
-                """;
+                """.formatted(title, content);
     }
 
     private String getErrorMessageHtml(String errorMessage) {
@@ -35,17 +35,17 @@ public class PostController {
     @GetMapping("/posts/write")
     @ResponseBody
     public String write() {
-        return getWriteFormHtml();
+        return getWriteFormHtml("", "");
     }
 
     @PostMapping("/posts/doWrite")
     @ResponseBody
     public String createPost(@RequestParam(defaultValue = "") String title, @RequestParam(defaultValue = "") String content) {
         if (title.isBlank()) {
-            return getErrorMessageHtml("제목을 입력해주세요") + getWriteFormHtml();
+            return getErrorMessageHtml("제목을 입력해주세요") + getWriteFormHtml(title, content);
         }
         if (content.isBlank()) {
-            return getErrorMessageHtml("내용을 입력해주세요") + getWriteFormHtml();
+            return getErrorMessageHtml("내용을 입력해주세요") + getWriteFormHtml(title, content);
 
         }
         Post newPost = postService.write(title, content);
