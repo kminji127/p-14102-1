@@ -1,0 +1,30 @@
+<h1 th:text="${siteName}"></h1>
+
+<ul style="color: red;">
+    <!--    th:block 은 타임리프 렌더링 될 때 본인은 렌더링 되지 않고 자식만 렌더링 된다.-->
+    <th:block th:fragment="error" th:utext="${errorMessage}"></th:block>
+</ul>
+
+<form method="POST" action="doWrite">
+    <input type="text" name="title" placeholder="제목" autofocus th:value="${form.title}">
+    <br>
+    <textarea name="content" placeholder="내용" th:text="${form.content}"></textarea>
+    <br>
+    <input type="submit" value="작성">
+</form>
+
+<script>
+    // 현재까지 나온 모든 폼 중 마지막 1개 찾기
+    const forms = document.querySelectorAll('form');
+    const lastForm = forms[forms.length - 1];
+
+    // 포커스할 필드는 ul 안의 li 에서 첫 번째로 나온 ErrorFieldName으로 설정
+    // previousElementSibling으로 form 이전 데이터인 ul 탐색
+    // data-error-field-name => dataset으로 매핑됨
+    const fieldToFocus = lastForm.previousElementSibling?.querySelector('li')?.dataset?.errorFieldName || '';
+
+    if (fieldToFocus.length > 0) {
+        // 해당 폼에서 지정된 필드에 포커스
+        lastForm[fieldToFocus].focus();
+    }
+</script>

@@ -9,10 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.stream.Collectors;
 
@@ -21,41 +22,10 @@ import java.util.stream.Collectors;
 public class PostController {
     private final PostService postService;
 
-    private String getWriteFormHtml(String title, String content) {
-        return """
-                <form action="doWrite" method="POST">
-                  <input type="text" name="title" placeholder="제목" value="%s">
-                  <br>
-                  <textarea name="content" placeholder="내용">%s</textarea>
-                  <br>
-                  <input type="submit" value="작성">
-                </form>
-                <script>
-                  // 현재까지 나온 모든 폼 중 마지막 1개 찾기
-                  const forms = document.querySelectorAll('form');
-                  const lastForm = forms[forms.length - 1];
-                  // 포커스할 필드는 ul 안의 li 에서 첫 번째로 나온 ErrorFieldName으로 설정
-                  // previousElementSibling으로 form 이전 데이터인 ul 탐색
-                  // data-error-field-name => dataset으로 매핑됨
-                  const fieldToFocus = lastForm.previousElementSibling?.querySelector('li')?.dataset?.errorFieldName || '';
-                  if (fieldToFocus.length > 0) {
-                    // 해당 폼에서 지정된 필드에 포커스
-                    lastForm[fieldToFocus].focus();
-                  }
-                </script>
-                """.formatted(title, content);
-    }
-
-    private String getErrorMessageHtml(String errorMessage) {
-        return """
-                <ul style="color:red;">%s</ul>
-                """.formatted(errorMessage);
-    }
-
-    @GetMapping("/posts/write")
-    @ResponseBody
-    public String write() {
-        return getWriteFormHtml("", "");
+    // @ModelAttribute("siteName") 붙은 메서드를 컨트롤러 안에 두면 타임리프에서 해당 메서드의 리턴값 사용 가능
+    @ModelAttribute("siteName")
+    public String siteName() {
+        return "커뮤니티 사이트 A";
     }
 
     @AllArgsConstructor
@@ -70,14 +40,19 @@ public class PostController {
         private String content;
     }
 
+    @GetMapping("/posts/write")
+    public String write(@ModelAttribute("form") WriteForm form) {
+        return "post/write";
+    }
+
     @PostMapping("/posts/doWrite")
-    @ResponseBody
     public String createPost(
             // @Valid @ModelAttribute("writeForm") WriteForm form의 축약형
             // @ModelAttribute: 스프링 MVC에서 요청 파라미터를 자바 객체로 바인딩
             // @Valid: form 객체의 필드에 @NotBlank, @Size 등 붙어 있으면 검사
-            @Valid WriteForm form,
-            BindingResult bindingResult) {
+            @ModelAttribute("form") @Valid WriteForm form,
+            BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors()
                     .stream()
@@ -86,9 +61,11 @@ public class PostController {
                     .map(field -> "<!--%s--><li data-error-field-name=\"%s\">%s</li>".formatted(field[1], field[0], field[2]))
                     .sorted()
                     .collect(Collectors.joining("\n"));
-            return getErrorMessageHtml(errorMessage) + getWriteFormHtml(form.getTitle(), form.getContent());
+            model.addAttribute("errorMessage", errorMessage);
+            return "post/write";
         }
         Post newPost = postService.write(form.getTitle(), form.getContent());
-        return "%d번 글 생성 완료".formatted(newPost.getId());
+        model.addAttribute("post", newPost);
+        return "post/writeDone";
     }
 }

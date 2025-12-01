@@ -6,6 +6,9 @@ spring:
   output:
     ansi:
       enabled: always
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
   jpa:
     show-sql: true
     hibernate:
