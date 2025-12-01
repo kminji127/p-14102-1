@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,7 +45,7 @@ public class PostController {
 
     private String getErrorMessageHtml(String errorMessage) {
         return """
-                <div style="color:red;">%s</div>
+                <ul style="color:red;">%s</div>
                 """.formatted(errorMessage);
     }
 
@@ -80,10 +79,11 @@ public class PostController {
             String errorFieldName = "title";
             String errorMessage = bindingResult.getFieldErrors()
                     .stream()
-                    .map(FieldError::getDefaultMessage)
+                    .map(fieldError -> (fieldError.getField() + "-" + fieldError.getDefaultMessage()).split("-", 3))
+                    // 주석: 에러 번호, 속성(data-error-field-name): 필드명, 내용: 에러 문구
+                    .map(field -> "<!--%s--><li data-error-field-name=\"%s\">%s</li>".formatted(field[1], field[0], field[2]))
                     .sorted()
-                    .map(message -> message.split("-", 2)[1])
-                    .collect(Collectors.joining("<br />"));
+                    .collect(Collectors.joining("\n"));
             return getErrorMessageHtml(errorMessage) + getWriteFormHtml(form.getTitle(), form.getContent(), errorFieldName);
         }
         Post newPost = postService.write(form.getTitle(), form.getContent());
