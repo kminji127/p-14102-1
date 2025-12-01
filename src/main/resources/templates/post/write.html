@@ -7,10 +7,18 @@
 
 <!--th:object - 모델에서 전달한 객체 받아오기-->
 <form method="POST" action="doWrite" th:object="${form}">
-    <!--*{ } - th:object로 지정된 객체의 필드로 접근-->
-    <input type="text" name="title" placeholder="제목" autofocus th:value="*{title}">
+    <!--*{ } - th:field - id, name, value 속성 자동 지정-->
+    <div>
+        <label for="title">제목</label>
+        <br>
+        <input type="text" placeholder="제목" autofocus th:field="*{title}">
+    </div>
     <br>
-    <textarea name="content" placeholder="내용" th:text="*{content}"></textarea>
+    <div>
+        <label for="content">내용</label>
+        <br>
+        <textarea placeholder="내용" th:field="*{content}"></textarea>
+    </div>
     <br>
     <input type="submit" value="작성">
 </form>
