@@ -3,7 +3,11 @@
 <!--th:object - 모델에서 전달한 객체 받아오기-->
 <form method="POST" action="doWrite" th:object="${form}">
     <ul th:if="${#fields.hasAnyErrors()}">
-        <li th:each="error:${#fields.allErrors().stream().sorted()}" th:text="${error.split('-', 2)[1]}"
+        <!--th:with 적용하여 한번 split한 결과를 변수화-->
+        <li th:with="errorStrs = ${error.split('-', 3)}, errorFieldName = ${errorStrs[1]}, errorMsg = ${errorStrs[2]}"
+            th:each="error:${#fields.allErrors().stream().sorted()}"
+            th:data-error-field-name="${errorFieldName}"
+            th:text="${errorMsg}"
             style="color: red"></li>
     </ul>
 
