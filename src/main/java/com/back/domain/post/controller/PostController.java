@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class PostController {
     private final PostService postService;
 
-    private String getWriteFormHtml(String title, String content, String fieldToFocus) {
+    private String getWriteFormHtml(String title, String content) {
         return """
                 <form action="doWrite" method="POST">
                   <input type="text" name="title" placeholder="제목" value="%s">
@@ -31,28 +31,31 @@ public class PostController {
                   <input type="submit" value="작성">
                 </form>
                 <script>
-                  const fieldToFocus = '%s';
+                  // 현재까지 나온 모든 폼 중 마지막 1개 찾기
+                  const forms = document.querySelectorAll('form');
+                  const lastForm = forms[forms.length - 1];
+                  // 포커스할 필드는 ul 안의 li 에서 첫 번째로 나온 ErrorFieldName으로 설정
+                  // previousElementSibling으로 form 이전 데이터인 ul 탐색
+                  // data-error-field-name => dataset으로 매핑됨
+                  const fieldToFocus = lastForm.previousElementSibling?.querySelector('li')?.dataset?.errorFieldName || '';
                   if (fieldToFocus.length > 0) {
-                    // 현재까지 나온 모든 폼 중 마지막 1개 찾기
-                    const forms = document.querySelectorAll('form');
-                    const lastForm = forms[forms.length - 1];
                     // 해당 폼에서 지정된 필드에 포커스
                     lastForm[fieldToFocus].focus();
                   }
                 </script>
-                """.formatted(title, content, fieldToFocus);
+                """.formatted(title, content);
     }
 
     private String getErrorMessageHtml(String errorMessage) {
         return """
-                <ul style="color:red;">%s</div>
+                <ul style="color:red;">%s</ul>
                 """.formatted(errorMessage);
     }
 
     @GetMapping("/posts/write")
     @ResponseBody
     public String write() {
-        return getWriteFormHtml("", "", "title");
+        return getWriteFormHtml("", "");
     }
 
     @AllArgsConstructor
@@ -76,7 +79,6 @@ public class PostController {
             @Valid WriteForm form,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            String errorFieldName = "title";
             String errorMessage = bindingResult.getFieldErrors()
                     .stream()
                     .map(fieldError -> (fieldError.getField() + "-" + fieldError.getDefaultMessage()).split("-", 3))
@@ -84,7 +86,7 @@ public class PostController {
                     .map(field -> "<!--%s--><li data-error-field-name=\"%s\">%s</li>".formatted(field[1], field[0], field[2]))
                     .sorted()
                     .collect(Collectors.joining("\n"));
-            return getErrorMessageHtml(errorMessage) + getWriteFormHtml(form.getTitle(), form.getContent(), errorFieldName);
+            return getErrorMessageHtml(errorMessage) + getWriteFormHtml(form.getTitle(), form.getContent());
         }
         Post newPost = postService.write(form.getTitle(), form.getContent());
         return "%d번 글 생성 완료".formatted(newPost.getId());
