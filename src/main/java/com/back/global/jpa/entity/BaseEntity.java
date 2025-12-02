@@ -17,9 +17,11 @@ public abstract class BaseEntity {
     private int id;
 
     @CreatedDate
+//    @Getter(AccessLevel.PRIVATE) // 필드별로 getter의 엑세스 레벨을 조절 가능
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+//    @Getter(AccessLevel.PROTECTED)
     private LocalDateTime modifyDate;
 
 }
