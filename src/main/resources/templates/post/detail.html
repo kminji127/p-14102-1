@@ -4,6 +4,9 @@
 
 <h2>제목 : [[${post.title}]]</h2>
 
+<h3>작성일 : <span th:text="${#temporals.format(post.createdDate, 'yy.MM.dd HH:mm')}">작성일</span></h3>
+<h3>수정일 : <span th:text="${#temporals.format(post.modifyDate, 'yy.MM.dd HH:mm')}">수성일</span></h3>
+
 <h3>내용</h3>
 <!--pre-line 적용하여 줄바꿈 표시-->
 <div style="white-space: pre-line">[[${post.content}]]</div>
