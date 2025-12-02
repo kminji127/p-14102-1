@@ -1,6 +1,5 @@
 package com.back.domain.post.controller;
 
-import com.back.domain.post.entity.Post;
 import com.back.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -54,8 +53,8 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return "post/write";
         }
-        Post newPost = postService.write(form.getTitle(), form.getContent());
-        model.addAttribute("post", newPost);
-        return "post/writeDone";
+        postService.write(form.getTitle(), form.getContent());
+        // 302로 응답
+        return "redirect:/posts/write";
     }
 }
