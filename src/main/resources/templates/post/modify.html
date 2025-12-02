@@ -1,0 +1,24 @@
+<h1 th:text="${siteName}"></h1>
+
+<form method="post" th:object="${form}">
+    <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+    <div>
+        <label for="title">제목</label>
+        <br>
+        <input type="text" placeholder="제목" autofocus th:field="*{title}">
+    </div>
+    <br>
+    <div>
+        <label for="content">내용</label>
+        <br>
+        <textarea placeholder="내용" th:field="*{content}"></textarea>
+    </div>
+    <br>
+    <input type="submit" value="수정">
+</form>
+
+<div>
+    <a th:href="@{/posts/{id}(id=${post.id})}">상세 페이지</a>
+    <a href="/posts">글 목록</a>
+</div>

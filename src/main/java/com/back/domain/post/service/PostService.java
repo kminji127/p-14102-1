@@ -30,4 +30,10 @@ public class PostService {
     public List<Post> findAll() {
         return postRepository.findAll();
     }
+
+    public Post modify(int id, String title, String content) {
+        Post post = postRepository.findById(id).get();
+        post.modify(title, content);
+        return post;
+    }
 }
