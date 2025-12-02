@@ -11,6 +11,23 @@
             style="color: red"></li>
     </ul>
 
+    <script>
+        // 현재까지 나온 모든 폼 중 마지막 1개 찾기
+        const forms = document.querySelectorAll('form');
+        const lastForm = forms[forms.length - 1];
+
+        // 포커스할 필드는 ul 안의 li 에서 첫 번째로 나온 ErrorFieldName으로 설정
+        // previousElementSibling으로 form 이전 데이터인 ul 탐색
+        // data-error-field-name => dataset으로 매핑됨
+        const fieldToFocus = lastForm.querySelector('ul > li')?.dataset?.errorFieldName || '';
+
+        if (fieldToFocus.length > 0) {
+            // 해당 폼에서 지정된 필드에 포커스
+            // 폼이 완성될 때까지 지연
+            setTimeout(() => lastForm[fieldToFocus].focus());
+        }
+    </script>
+
     <!--*{ } - th:field - id, name, value 속성 자동 지정-->
     <div>
         <label for="title">제목</label>
