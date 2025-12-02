@@ -12,7 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -70,12 +73,14 @@ public class PostController {
 
     @GetMapping("/posts")
     @Transactional(readOnly = true)
-    @ResponseBody // 스프링이 객체를 HTTP 응답 본문으로 직렬화
-    public List<Post> showList() {
+//    @ResponseBody // 스프링이 객체를 HTTP 응답 본문으로 직렬화
+    public String showList(Model model) {
         // 스프링부트는 기본적으로 Jackson 라이브러리를 포함하고 있어서 객체를 JSON으로 자동 변환
         // JSON으로 변환 시 Content-Type: application/json 헤더가 자동으로 설정됨
         // public이나, getter 메소드가 있는 private 필드만 포함
-        return postService.findAll();
+        List<Post> posts = postService.findAll();
+        model.addAttribute("posts", posts);
+        return "post/list";
     }
 
     @GetMapping("/posts/")
