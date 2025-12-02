@@ -1,7 +1,7 @@
 <h1 th:text="${siteName}"></h1>
 
 <!--th:object - 모델에서 전달한 객체 받아오기-->
-<form method="POST" action="doWrite" th:object="${form}">
+<form method="POST" th:object="${form}">
     <!--에러: 코드 조각(fragment) 사용-->
     <div th:replace="~{form_errors :: formErrorsFragment}"></div>
 

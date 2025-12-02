@@ -43,7 +43,7 @@ public class PostController {
         return "post/write";
     }
 
-    @PostMapping("/posts/doWrite")
+    @PostMapping("/posts/write")
     public String createPost(
             // @Valid @ModelAttribute("writeForm") WriteForm form의 축약형
             // @ModelAttribute: 스프링 MVC에서 요청 파라미터를 자바 객체로 바인딩
