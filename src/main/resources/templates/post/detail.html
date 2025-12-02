@@ -1,0 +1,15 @@
+<h1 th:text="${siteName}"></h1>
+
+<h2>번호 : [[${post.id}]]</h2>
+
+<h2>제목 : [[${post.title}]]</h2>
+
+<h3>내용</h3>
+<!--pre-line 적용하여 줄바꿈 표시-->
+<div style="white-space: pre-line">[[${post.content}]]</div>
+
+<div>
+    <a href=".">글 목록</a> <!--/posts-->
+    <a href="write">글 쓰기</a> <!--/posts/write-->
+    <a th:href="@{{id}/modify(id=${post.id})}">글 수정</a> <!--/posts/{id}/modify-->
+</div>

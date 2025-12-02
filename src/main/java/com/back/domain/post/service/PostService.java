@@ -6,6 +6,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -18,5 +21,13 @@ public class PostService {
     @Transactional
     public Post write(String title, String content) {
         return postRepository.save(new Post(title, content));
+    }
+
+    public Optional<Post> findById(int id) {
+        return postRepository.findById(id);
+    }
+
+    public List<Post> findAll() {
+        return postRepository.findAll();
     }
 }

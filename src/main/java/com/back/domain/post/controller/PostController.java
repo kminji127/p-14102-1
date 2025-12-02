@@ -1,5 +1,6 @@
 package com.back.domain.post.controller;
 
+import com.back.domain.post.entity.Post;
 import com.back.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -8,11 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,8 +55,31 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return "post/write";
         }
-        postService.write(form.getTitle(), form.getContent());
+        Post newPost = postService.write(form.getTitle(), form.getContent());
         // 302로 응답
-        return "redirect:/posts/write";
+        return "redirect:/posts/" + newPost.getId();
+    }
+
+    @GetMapping("/posts/{id}")
+    @Transactional(readOnly = true)
+    public String showDetail(@PathVariable int id, Model model) {
+        Post post = postService.findById(id).get();
+        model.addAttribute("post", post);
+        return "post/detail";
+    }
+
+    @GetMapping("/posts")
+    @Transactional(readOnly = true)
+    @ResponseBody // 스프링이 객체를 HTTP 응답 본문으로 직렬화
+    public List<Post> showList() {
+        // 스프링부트는 기본적으로 Jackson 라이브러리를 포함하고 있어서 객체를 JSON으로 자동 변환
+        // JSON으로 변환 시 Content-Type: application/json 헤더가 자동으로 설정됨
+        // public이나, getter 메소드가 있는 private 필드만 포함
+        return postService.findAll();
+    }
+
+    @GetMapping("/posts/")
+    public String redirectToList() {
+        return "redirect:/posts";
     }
 }
