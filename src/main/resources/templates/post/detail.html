@@ -11,6 +11,19 @@
 <!--pre-line 적용하여 줄바꿈 표시-->
 <div style="white-space: pre-line">[[${post.content}]]</div>
 
+<hr>
+
+<h2>댓글</h2>
+<ul>
+    <li th:each="comment:${post.comments.reversed()}">
+        <h3>번호 : <span th:text="${comment.id}">댓글 번호</span></h3>
+        <h4>작성일 : <span th:text="${#temporals.format(comment.createdDate, 'yy.MM.dd HH:mm')}">작성일</span></h4>
+        <h4>수정일 : <span th:text="${#temporals.format(comment.modifyDate, 'yy.MM.dd HH:mm')}">작성일</span></h4>
+        <div style="white-space: pre-line" th:text="${comment.content}"></div>
+        <hr>
+    </li>
+</ul>
+
 <div>
     <a href=".">글 목록</a> <!--/posts-->
     <a href="write">글 쓰기</a> <!--/posts/write-->
