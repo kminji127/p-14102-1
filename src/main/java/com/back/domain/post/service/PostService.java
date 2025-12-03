@@ -36,4 +36,9 @@ public class PostService {
         post.modify(title, content);
         return post;
     }
+
+    public void addComment(int id, String commentContent) {
+        Post post = postRepository.findById(id).get();
+        post.addComment(commentContent);
+    }
 }

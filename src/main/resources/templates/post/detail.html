@@ -22,8 +22,8 @@
             form.content.focus();
             return;
         }
-        if (form.content.value.length < 2) {
-            alert("댓글 내용을 2자 이상 입력해주세요.");
+        if (form.content.value.length < 2 || form.content.value.length > 100) {
+            alert("댓글 내용을 2자 이상 100자 이하 입력해주세요.");
             form.content.focus();
             return;
         }
@@ -31,7 +31,7 @@
     }
 </script>
 <!--return false => 전송 버튼 눌렀을 때 폼이 전송되는 것을 막는다.-->
-<form th:action="@{/posts/{id}/comments/write(id=${post.id})}" method="post"
+<form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post"
       onsubmit="PostComment__submitWriteForm(this); return false;">
     <div>
         <label for="content">내용</label>
