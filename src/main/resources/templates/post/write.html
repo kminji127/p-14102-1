@@ -7,8 +7,7 @@
 <div layout:fragment="content">
 
     <!--th:object - 모델에서 전달한 객체 받아오기-->
-    <form method="POST" th:object="${form}">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <form method="POST" th:acton th:object="${form}">
         <!--에러: 코드 조각(fragment) 사용-->
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
 
