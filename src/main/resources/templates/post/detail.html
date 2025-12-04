@@ -39,6 +39,7 @@
     <!--return false => 전송 버튼 눌렀을 때 폼이 전송되는 것을 막는다.-->
     <form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post"
           onsubmit="PostComment__submitWriteForm(this); return false;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div>
             <label for="content">내용</label>
             <textarea name="content" id="content" cols="50" rows="5"></textarea>
