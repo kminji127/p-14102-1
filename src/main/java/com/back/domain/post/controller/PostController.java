@@ -118,8 +118,7 @@ public class PostController {
     @Transactional
     public String modify(@PathVariable int id,
                          @Valid @ModelAttribute("form") WriteForm form,
-                         BindingResult bindingResult,
-                         Model model) {
+                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "post/modify";
         }

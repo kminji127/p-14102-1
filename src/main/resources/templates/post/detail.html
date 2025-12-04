@@ -50,7 +50,7 @@
         <h4>수정일 : <span th:text="${#temporals.format(comment.modifyDate, 'yy.MM.dd HH:mm')}">작성일</span></h4>
         <div style="white-space: pre-line" th:text="${comment.content}"></div>
         <br>
-        <a href="">수정</a>
+        <a th:href="@{/posts/{postId}/comments/{commentId}/modify(postId = ${post.id}, commentId = ${comment.id})}">수정</a>
         <a onclick="return confirm('정말로 삭제하시겠습니까?');"
            th:href="@{/posts/{postId}/comments/{commentId}(postId = ${post.id}, commentId = ${comment.id})}">삭제</a>
         <hr>
