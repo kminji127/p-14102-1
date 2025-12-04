@@ -1,26 +1,33 @@
-<h1 th:text="${siteName}"></h1>
+<html layout:decorate="~{layout}">
 
-<!--th:object - 모델에서 전달한 객체 받아오기-->
-<form method="POST" th:object="${form}">
-    <!--에러: 코드 조각(fragment) 사용-->
-    <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+<head>
+    <title>글 작성</title>
+</head>
 
-    <!--*{ } - th:field - id, name, value 속성 자동 지정-->
-    <div>
-        <label for="title">제목</label>
+<div layout:fragment="content">
+
+    <!--th:object - 모델에서 전달한 객체 받아오기-->
+    <form method="POST" th:object="${form}">
+        <!--에러: 코드 조각(fragment) 사용-->
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+        <!--*{ } - th:field - id, name, value 속성 자동 지정-->
+        <div>
+            <label for="title">제목</label>
+            <br>
+            <input type="text" placeholder="제목" autofocus th:field="*{title}">
+        </div>
         <br>
-        <input type="text" placeholder="제목" autofocus th:field="*{title}">
-    </div>
-    <br>
-    <div>
-        <label for="content">내용</label>
+        <div>
+            <label for="content">내용</label>
+            <br>
+            <textarea placeholder="내용" th:field="*{content}"></textarea>
+        </div>
         <br>
-        <textarea placeholder="내용" th:field="*{content}"></textarea>
-    </div>
-    <br>
-    <input type="submit" value="작성">
-</form>
+        <input type="submit" value="작성">
+    </form>
 
-<div>
-    <a href=".">글 목록</a>
+    <div>
+        <a href=".">글 목록</a>
+    </div>
 </div>

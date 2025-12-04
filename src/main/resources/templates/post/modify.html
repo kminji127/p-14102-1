@@ -1,26 +1,33 @@
-<h1 th:text="${siteName}"></h1>
+<html layout:decorate="~{layout}">
 
-<form method="post" th:object="${form}">
-    <!--    _method 파라미터를 통해서 액션 메서드에서 PutMapping, DeleteMapping 도 사용할 수 있도록 변경-->
-    <input type="hidden" name="_method" value="PUT">
-    <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+<head>
+    <title th:text="|글 수정 - ${post.title}|"></title>
+</head>
+
+<div layout:fragment="content">
+
+    <form method="post" th:object="${form}">
+        <!--    _method 파라미터를 통해서 액션 메서드에서 PutMapping, DeleteMapping 도 사용할 수 있도록 변경-->
+        <input type="hidden" name="_method" value="PUT">
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+        <div>
+            <label for="title">제목</label>
+            <br>
+            <input type="text" placeholder="제목" autofocus th:field="*{title}">
+        </div>
+        <br>
+        <div>
+            <label for="content">내용</label>
+            <br>
+            <textarea placeholder="내용" th:field="*{content}"></textarea>
+        </div>
+        <br>
+        <input type="submit" value="수정">
+    </form>
 
     <div>
-        <label for="title">제목</label>
-        <br>
-        <input type="text" placeholder="제목" autofocus th:field="*{title}">
+        <a th:href="@{/posts/{id}(id=${post.id})}">상세 페이지</a>
+        <a href="/posts">글 목록</a>
     </div>
-    <br>
-    <div>
-        <label for="content">내용</label>
-        <br>
-        <textarea placeholder="내용" th:field="*{content}"></textarea>
-    </div>
-    <br>
-    <input type="submit" value="수정">
-</form>
-
-<div>
-    <a th:href="@{/posts/{id}(id=${post.id})}">상세 페이지</a>
-    <a href="/posts">글 목록</a>
 </div>

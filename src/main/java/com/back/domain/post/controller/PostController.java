@@ -19,12 +19,6 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    // @ModelAttribute("siteName") 붙은 메서드를 컨트롤러 안에 두면 타임리프에서 해당 메서드의 리턴값 사용 가능
-    @ModelAttribute("siteName")
-    public String siteName() {
-        return "커뮤니티 사이트 A";
-    }
-
     record WriteForm(
             @NotBlank(message = "1-title-제목을 입력해주세요.")
             @Size(min = 2, max = 20, message = "2-title-제목은 2자 이상, 20자 이하로 입력 가능합니다.")

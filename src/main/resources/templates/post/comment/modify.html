@@ -1,62 +1,71 @@
-<script>
-    function PostComment__submitModifyForm(form) {
-        form.content.value = form.content.value.trim();
-        if (form.content.value.length === 0) {
-            alert("댓글 내용을 입력해주세요.");
-            form.content.focus();
-            return;
+<html layout:decorate="~{layout}">
+
+<head>
+    <title th:text="|댓글 수정 - ${comment.content}|"></title>
+</head>
+
+<div layout:fragment="content">
+
+    <script>
+        function PostComment__submitModifyForm(form) {
+            form.content.value = form.content.value.trim();
+            if (form.content.value.length === 0) {
+                alert("댓글 내용을 입력해주세요.");
+                form.content.focus();
+                return;
+            }
+            if (form.content.value.length < 2 || form.content.value.length > 100) {
+                alert("댓글 내용을 2자 이상 100자 이하 입력해주세요.");
+                form.content.focus();
+                return;
+            }
+            form.submit();
         }
-        if (form.content.value.length < 2 || form.content.value.length > 100) {
-            alert("댓글 내용을 2자 이상 100자 이하 입력해주세요.");
-            form.content.focus();
-            return;
-        }
-        form.submit();
-    }
-</script>
+    </script>
 
-<form method="POST" onsubmit="PostComment__submitModifyForm(this); return false;">
-    <!--    _method 파라미터를 통해서 액션 메서드에서 PutMapping, DeleteMapping 도 사용할 수 있도록 변경-->
-    <input type="hidden" name="_method" value="PUT">
+    <form method="POST" onsubmit="PostComment__submitModifyForm(this); return false;">
+        <!--    _method 파라미터를 통해서 액션 메서드에서 PutMapping, DeleteMapping 도 사용할 수 있도록 변경-->
+        <input type="hidden" name="_method" value="PUT">
+        <div>
+            <label>글 ID</label><br>
+            <span th:text="${post.id}"></span>
+        </div>
+
+        <div>
+            <label>글 제목</label><br>
+            <span th:text="${post.title}"></span>
+        </div>
+
+        <div>
+            <label>댓글 ID</label><br>
+            <span th:text="${comment.id}"></span>
+        </div>
+
+        <div>
+            <label>댓글 작성일</label><br>
+            <span th:text="${#temporals.format(comment.createdDate, 'yy.MM.dd HH:mm')}"></span>
+        </div>
+
+        <div>
+            <label>댓글 수정일</label><br>
+            <span th:text="${#temporals.format(comment.modifyDate, 'yy.MM.dd HH:mm')}"></span>
+        </div>
+
+        <div>
+            <label>기존 내용</label><br>
+            <div style="white-space: pre-line;" th:text="${comment.content}">댓글 내용</div>
+        </div>
+
+        <div>
+            <label for="content">내용</label><br>
+            <textarea placeholder="내용" id="content" name="content" th:text="${comment.content}"></textarea>
+        </div>
+
+        <input type="submit" value="댓글 수정">
+    </form>
+
     <div>
-        <label>글 ID</label><br>
-        <span th:text="${post.id}"></span>
+        <a th:href="@{/posts/{id}(id=${post.id})}">글 상세페이지</a>
+        <a href="/posts">글 목록</a>
     </div>
-
-    <div>
-        <label>글 제목</label><br>
-        <span th:text="${post.title}"></span>
-    </div>
-
-    <div>
-        <label>댓글 ID</label><br>
-        <span th:text="${comment.id}"></span>
-    </div>
-
-    <div>
-        <label>댓글 작성일</label><br>
-        <span th:text="${#temporals.format(comment.createdDate, 'yy.MM.dd HH:mm')}"></span>
-    </div>
-
-    <div>
-        <label>댓글 수정일</label><br>
-        <span th:text="${#temporals.format(comment.modifyDate, 'yy.MM.dd HH:mm')}"></span>
-    </div>
-
-    <div>
-        <label>기존 내용</label><br>
-        <div style="white-space: pre-line;" th:text="${comment.content}">댓글 내용</div>
-    </div>
-
-    <div>
-        <label for="content">내용</label><br>
-        <textarea placeholder="내용" id="content" name="content" th:text="${comment.content}"></textarea>
-    </div>
-
-    <input type="submit" value="댓글 수정">
-</form>
-
-<div>
-    <a th:href="@{/posts/{id}(id=${post.id})}">글 상세페이지</a>
-    <a href="/posts">글 목록</a>
 </div>
