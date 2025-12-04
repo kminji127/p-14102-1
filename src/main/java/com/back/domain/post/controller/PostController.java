@@ -5,10 +5,7 @@ import com.back.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -31,29 +28,26 @@ public class PostController {
         return "커뮤니티 사이트 A";
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class WriteForm {
-        @NotBlank(message = "1-title-제목을 입력해주세요.")
-        @Size(min = 2, max = 20, message = "2-title-제목은 2자 이상, 20자 이하로 입력 가능합니다.")
-        private String title;
+    record WriteForm(
+            @NotBlank(message = "1-title-제목을 입력해주세요.")
+            @Size(min = 2, max = 20, message = "2-title-제목은 2자 이상, 20자 이하로 입력 가능합니다.")
+            String title, // 기본적으로 final, 그래서 setter가 없고 수정하려면 객체 자체를 다시 만들어야 한다.
 
-        @NotBlank(message = "3-content-내용을 입력해주세요.")
-        @Size(min = 2, max = 100, message = "4-content-내용은 2자 이상, 20자 이하로 입력 가능합니다.")
-        private String content;
+            @NotBlank(message = "3-content-내용을 입력해주세요.")
+            @Size(min = 2, max = 100, message = "4-content-내용은 2자 이상, 20자 이하로 입력 가능합니다.")
+            String content
+    ) {
     }
 
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class ModifyForm {
-        @NotBlank(message = "1-title-제목을 입력해주세요.")
-        @Size(min = 2, max = 20, message = "2-title-제목은 2자 이상, 20자 이하로 입력 가능합니다.")
-        private String title;
+    record ModifyForm(
+            @NotBlank(message = "1-title-제목을 입력해주세요.")
+            @Size(min = 2, max = 20, message = "2-title-제목은 2자 이상, 20자 이하로 입력 가능합니다.")
+            String title,
 
-        @NotBlank(message = "3-content-내용을 입력해주세요.")
-        @Size(min = 2, max = 100, message = "4-content-내용은 2자 이상, 20자 이하로 입력 가능합니다.")
-        private String content;
+            @NotBlank(message = "3-content-내용을 입력해주세요.")
+            @Size(min = 2, max = 100, message = "4-content-내용은 2자 이상, 20자 이하로 입력 가능합니다.")
+            String content
+    ) {
     }
 
     @GetMapping("/posts/write")
@@ -72,7 +66,7 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return "post/write";
         }
-        Post newPost = postService.write(form.getTitle(), form.getContent());
+        Post newPost = postService.write(form.title, form.content);
         // 302로 응답
         return "redirect:/posts/" + newPost.getId();
     }
@@ -109,8 +103,7 @@ public class PostController {
                              Model model) {
         Post post = postService.findById(id).get();
         model.addAttribute("post", post);
-        form.setTitle(post.getTitle());
-        form.setContent(post.getContent());
+        model.addAttribute("form", new ModifyForm(post.getTitle(), post.getContent()));
         return "post/modify";
     }
 
@@ -122,7 +115,7 @@ public class PostController {
         if (bindingResult.hasErrors()) {
             return "post/modify";
         }
-        Post post = postService.modify(id, form.getTitle(), form.getContent());
+        Post post = postService.modify(id, form.title, form.content);
         // 302로 응답
         return "redirect:/posts/" + post.getId();
     }

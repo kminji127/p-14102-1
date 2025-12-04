@@ -6,8 +6,6 @@ import com.back.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,27 +20,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class CommentController {
     private final PostService postService;
 
-    @AllArgsConstructor
-    @Getter
-    public static class WriteForm {
-        @NotBlank
-        @Size(min = 2, max = 100)
-        private String content;
+    record WriteForm(
+            @NotBlank
+            @Size(min = 2, max = 100)
+            String content
+    ) {
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class ModifyForm {
-        @NotBlank
-        @Size(min = 2, max = 100)
-        private String content;
+    record ModifyForm(
+            @NotBlank
+            @Size(min = 2, max = 100)
+            String content
+    ) {
     }
 
     @PostMapping("/posts/{postId}/comments")
     @Transactional
     public String addComment(@PathVariable int postId,
                              @Valid WriteForm writeForm) {
-        postService.addComment(postId, writeForm.getContent());
+        postService.addComment(postId, writeForm.content);
         return "redirect:/posts/" + postId;
     }
 
@@ -73,7 +69,7 @@ public class CommentController {
     public String modify(@PathVariable int postId,
                          @PathVariable int commentId,
                          @ModelAttribute("form") ModifyForm form) {
-        postService.modifyComment(postId, commentId, form.getContent());
+        postService.modifyComment(postId, commentId, form.content);
         return "redirect:/posts/" + postId;
     }
 }
