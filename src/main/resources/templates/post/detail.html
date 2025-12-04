@@ -57,7 +57,8 @@
             <div style="white-space: pre-line" th:text="${comment.content}"></div>
             <br>
             <a th:href="@{/posts/{postId}/comments/{commentId}/modify(postId = ${post.id}, commentId = ${comment.id})}">수정</a>
-            <a onclick="return confirm('정말로 삭제하시겠습니까?');"
+            <a method="DELETE"
+               onclick="return confirm('정말로 삭제하시겠습니까?');"
                th:href="@{/posts/{postId}/comments/{commentId}(postId = ${post.id}, commentId = ${comment.id})}">삭제</a>
             <hr>
         </li>
@@ -67,5 +68,8 @@
         <a href=".">글 목록</a> <!--/posts-->
         <a href="write">글 쓰기</a> <!--/posts/write-->
         <a th:href="@{{id}/modify(id=${post.id})}">글 수정</a> <!--/posts/{id}/modify-->
+        <a method="DELETE"
+           onclick="return confirm('정말로 삭제하시겠습니까?');"
+           th:href="@{/posts/{postId}(postId = ${post.id})}">글 삭제</a>
     </div>
 </div>

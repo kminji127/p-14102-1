@@ -110,4 +110,11 @@ public class PostController {
         // 302로 응답
         return "redirect:/posts/" + post.getId();
     }
+
+    @DeleteMapping("/posts/{id}")
+    @Transactional
+    public String delete(@PathVariable int id) {
+        postService.delete(id);
+        return "redirect:/posts";
+    }
 }

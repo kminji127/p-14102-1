@@ -39,7 +39,7 @@ public class CommentController {
         return "redirect:/posts/" + postId;
     }
 
-    @GetMapping("/posts/{postId}/comments/{commentId}")
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
     @Transactional
     public String delete(@PathVariable int postId,
                          @PathVariable int commentId) {

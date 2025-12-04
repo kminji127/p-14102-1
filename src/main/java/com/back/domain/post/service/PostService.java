@@ -38,6 +38,12 @@ public class PostService {
         return post;
     }
 
+    public void delete(int id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        postRepository.delete(post);
+    }
+
     public void addComment(int id, String commentContent) {
         Post post = postRepository.findById(id).get();
         post.addComment(commentContent);
